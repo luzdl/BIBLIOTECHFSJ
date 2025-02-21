@@ -16,23 +16,45 @@ class Usuario {
     public function getTipo(): string { return $this->tipo; }
 
     public function listarLibros() {
-        $this->biblioteca->listarLibros();
+        $libros = $this->biblioteca->listarLibros();
+        if (empty($libros)) {
+            echo "<p>No hay libros disponibles</p>";
+        }
+        return $libros;
     }
 
     public function prestarLibro(string $titulo) {
-        if ($this->tipo === "Cliente") {
-            $this->biblioteca->prestarLibro($titulo);
-        } else {
-            echo "Los administradores no pueden pedir prestados libros.<br>";
-        }
+        $resultado = $this->biblioteca->prestarLibro($titulo, $this->nombre);
+        // Ahora simplemente retornamos el resultado de la biblioteca
+        return $resultado;
     }
 
     public function agregarLibro(string $titulo, string $autor, string $categoria) {
         if ($this->tipo === "Administrador") {
-            $this->biblioteca->agregarLibro($titulo, $autor, $categoria);
-        } else {
-            echo "Los clientes no pueden agregar libros.<br>";
+            return $this->biblioteca->agregarLibro($titulo, $autor, $categoria);
         }
+        return false;
+    }
+
+    public function eliminarLibro($titulo) {
+        if ($this->tipo === "Administrador") {
+            return $this->biblioteca->eliminarLibro($titulo);
+        }
+        return false;
+    }
+
+    public function modificarLibro($tituloOriginal, $tituloNuevo, $autor, $categoria) {
+        if ($this->tipo === "Administrador") {
+            return $this->biblioteca->modificarLibro($tituloOriginal, $tituloNuevo, $autor, $categoria);
+        }
+        return false;
+    }
+
+    public function devolverLibro($titulo) {
+        if ($this->tipo === "Administrador") {
+            return $this->biblioteca->devolverLibro($titulo);
+        }
+        return ["success" => false, "message" => "Solo los administradores pueden procesar devoluciones."];
     }
 }
 ?>
